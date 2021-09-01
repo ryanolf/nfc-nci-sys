@@ -1,0 +1,8 @@
+/target
+Cargo.lock
+/.cargo
+*.code-workspace
+/scripts
+.vscode
+.DS_Store
+

@@ -1,0 +1,16 @@
+cargo-features = ["edition2021"]
+[package]
+name = "nfc-nci-sys"
+version = "0.1.0"
+edition = "2021"
+links = "nfc-nci"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+
+[build-dependencies]
+bindgen = "0.59.1"
+
+[dev-dependencies]
+libffi = "2.0.0"
