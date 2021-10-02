@@ -1,11 +1,12 @@
 #![allow(non_upper_case_globals)]
 #![allow(non_camel_case_types)]
 #![allow(non_snake_case)]
+#![allow(deref_nullptr)]
 
 /*!
 Rust bindings for NXP's [linux_nfc-nci library](https://github.com/NXPNFCLinux/linux_libnfc-nci). Generated with bindgen.
 
-linux_nfc-nci must be built and available for the target platform. Set the environment 
+linux_nfc-nci must be built and available for the target platform. Set the environment
 variables NFC_NCI_LINUX_LIB_DIR and NFC_NCI_LINUX_INCLUDE_DIR to point to the relevant directories continaing library and headers.
 
 Example code for writing and reading a tag using a connected, compatible reader.
@@ -48,12 +49,12 @@ fn main() -> Result<(), Box<dyn Error>> {
     let closure = Closure1::new(&f);
     // let on_arrival = *closure.code_ptr();
 
-    let mut tag_callback = 
+    let mut tag_callback =
         nfcTagCallback_t {
             onTagArrival: unsafe { Some(std::mem::transmute(*closure.code_ptr())) },
             onTagDeparture: None
         };
-    
+
     unsafe {
         nfcManager_doInitialize();
         nfcManager_registerTagCallback(&mut tag_callback);
@@ -87,7 +88,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let ndef_content_len;
     unsafe {
         ndef_content_len = ndef_createText(
-            language_code_ptr, 
+            language_code_ptr,
             text_content_ptr,
             ndef_content.as_mut_ptr(),
             ndef_content.capacity().try_into().unwrap()
@@ -96,12 +97,12 @@ fn main() -> Result<(), Box<dyn Error>> {
         let (_, _) = (CString::from_raw(language_code_ptr), CString::from_raw(text_content_ptr));
     };
 
-    if ndef_content_len <= 0 { 
-        return do_cleanup(Err("Failed to encode NDEF text.".into())) 
+    if ndef_content_len <= 0 {
+        return do_cleanup(Err("Failed to encode NDEF text.".into()))
     } else {
         unsafe { ndef_content.set_len(ndef_content_len.try_into().unwrap()) };
     }
-    
+
     unsafe {
         let res = nfcTag_writeNdef(tag_info.handle, ndef_content.as_mut_ptr(), ndef_content_len.try_into().unwrap());
         if  res != 0 {
@@ -124,7 +125,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut text_content: Vec<u8> = Vec::with_capacity(ndef_len.try_into().unwrap());
     let text_len = unsafe {
         ndef_readText(
-            ndef_content.as_mut_ptr(), ndef_len.try_into().unwrap(), 
+            ndef_content.as_mut_ptr(), ndef_len.try_into().unwrap(),
             text_content.as_mut_ptr() as *mut std::os::raw::c_char, ndef_len.try_into().unwrap()
         )
     };
@@ -162,17 +163,20 @@ mod tests {
         let ndef_content_len;
         unsafe {
             ndef_content_len = ndef_createText(
-                language_code_ptr, 
+                language_code_ptr,
                 text_content_ptr,
                 ndef_content.as_mut_ptr(),
-                ndef_content.capacity().try_into().unwrap()
+                ndef_content.capacity().try_into().unwrap(),
             );
             // Make sure raw pointer memory is freed, per into_raw() docs
-            let (_, _) = (CString::from_raw(language_code_ptr), CString::from_raw(text_content_ptr));
+            let (_, _) = (
+                CString::from_raw(language_code_ptr),
+                CString::from_raw(text_content_ptr),
+            );
         };
 
         assert!(ndef_content_len > 0, "Failed to encode NDEF text.");
-        
+
         unsafe { ndef_content.set_len(ndef_content_len.try_into().unwrap()) };
         // The text content is less than the ndef content in size.
         // let mut text_content: Vec<std::os::raw::c_char> = Vec::with_capacity(ndef_content.len());
@@ -180,8 +184,10 @@ mod tests {
 
         let text_len = unsafe {
             ndef_readText(
-                ndef_content.as_mut_ptr(), ndef_content_len.try_into().unwrap(), 
-                text_content.as_mut_ptr() as *mut std::os::raw::c_char, ndef_content_len.try_into().unwrap()
+                ndef_content.as_mut_ptr(),
+                ndef_content_len.try_into().unwrap(),
+                text_content.as_mut_ptr() as *mut std::os::raw::c_char,
+                ndef_content_len.try_into().unwrap(),
             )
         };
         assert!(text_len != -1, "Failed to decode NDEF text.");
