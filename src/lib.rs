@@ -29,11 +29,10 @@ fn main() -> Result<(), Box<dyn Error>> {
     const TAG_READ_TIMEOUT_MS: u64 = 5000;
     let (tx, rx) = mpsc::channel();
 
-    // f will end up as callback in another thread, so we "move" tx.
     // This callback should not try to perform any nfc tag operations as it
-    // seems to block the thread in which those operations are done. So send
-    // the tag info back to the main thread and get out so the NFC management thread
-    // can go about its business.
+    // blocks the thread in which those operations are done. So send the tag
+    // info back to the main thread and get out so the NFC management thread can
+    // go about its business.
     let f = move | tag_info: *mut nfc_tag_info_t | {
         print!("Tag UID: ");
         unsafe {
