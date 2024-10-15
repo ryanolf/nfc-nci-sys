@@ -7,7 +7,34 @@
 Rust bindings for NXP's [linux_nfc-nci library](https://github.com/NXPNFCLinux/linux_libnfc-nci). Generated with bindgen.
 
 linux_nfc-nci must be built and available for the target platform. Set the environment
-variables NFC_NCI_LINUX_LIB_DIR and NFC_NCI_LINUX_INCLUDE_DIR to point to the relevant directories continaing library and headers.
+variables NFC_NCI_LINUX_LIB_DIR and NFC_NCI_LINUX_INCLUDE_DIR to point to the relevant
+directories continaing library and headers at build time. At runtime, the library must be
+available in the library path, e.g. LD_LIBRARY_PATH on Linux.
+
+For example, in the `vendor/linux_libnfc-nci` directory, run the following commands:
+
+```sh
+./bootstrap
+./configure [--prefix=<prefix: default /usr/local>]
+make
+make install
+```
+
+Then, set the environment variables:
+
+```sh
+export NFC_NCI_LINUX_LIB_DIR=<prefix>/lib
+export NFC_NCI_LINUX_INCLUDE_DIR=<prefix>/include
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:<prefix>/lib
+```
+Or set them in your `~/.cargo/config.toml` file whereever you're building from.
+
+```toml
+[env]
+NFC_NCI_LINUX_INCLUDE_DIR = "<prefix>/include"
+NFC_NCI_LINUX_LIB_DIR = "<prefix>/lib"
+LD_LIBRARY_PATH = "<prefix>/lib"
+```
 
 Example code for writing and reading a tag using a connected, compatible reader.
 

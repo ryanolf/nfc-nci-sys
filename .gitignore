@@ -5,4 +5,5 @@ Cargo.lock
 /scripts
 .vscode
 .DS_Store
+.devcontainer
 

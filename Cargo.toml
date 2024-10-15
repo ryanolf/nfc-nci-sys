@@ -9,7 +9,7 @@ links = "nfc-nci"
 [dependencies]
 
 [build-dependencies]
-bindgen = "0.59.1"
+bindgen = "0.70.1"
 
 [dev-dependencies]
-libffi = "2.0.0"
+libffi = "3.2.0"

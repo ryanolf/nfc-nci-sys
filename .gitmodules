@@ -1,0 +1,3 @@
+[submodule "vendor/linux_libnfc-nci"]
+	path = vendor/linux_libnfc-nci
+	url = https://github.com/NXPNFCLinux/linux_libnfc-nci
