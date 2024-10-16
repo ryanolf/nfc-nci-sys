@@ -1,6 +1,6 @@
 [package]
 name = "nfc-nci-sys"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 links = "nfc-nci"
 
@@ -13,3 +13,7 @@ bindgen = "0.70.1"
 
 [dev-dependencies]
 libffi = "3.2.0"
+
+[features]
+default = []
+vendored = []

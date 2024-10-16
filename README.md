@@ -1,9 +1,11 @@
 # nfc-nci-sys
 
 Rust FFI bindings for NXP's [linux_nfc-nci library](https://github.com/NXPNFCLinux/linux_libnfc-nci). Generated with bindgen.
-linux_nfc-nci must be built and available for the target platform. Set the environment
-variables NFC_NCI_LINUX_LIB_DIR and NFC_NCI_LINUX_INCLUDE_DIR to point to the relevant directories continaing library and headers.
-At runtime, the library must be available in the library path, e.g. LD_LIBRARY_PATH on Linux.
+
+`linux_nfc-nci` must be built and available for the target platform. Set the environment
+variables `NFC_NCI_LINUX_LIB_DIR` and `NFC_NCI_LINUX_INCLUDE_DIR` to point to the relevant directories continaing library and headers. Or, enable the "vendored" feature to build from source. In this case, the library and headers will be installed in `lib` and `include` subdirectories in the build output directory, and are typically in the default search path for executables in that directory.
+
+At runtime, the library must be available in the library path, e.g. `LD_LIBRARY_PATH` on Linux, or on one of the default search paths.
 
 For example, in the `vendor/linux_libnfc-nci` directory, run the following commands:
 
